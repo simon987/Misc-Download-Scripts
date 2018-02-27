@@ -22,16 +22,13 @@ headers = {
 
 payload = {"email": args.user if args.user is not None else "", "password": args.password,
            "host": "unknown", "url": "unknown", "queryParams": ""}
-print(payload)
 r = requests.post(args.url.replace("embed", "video_password"), headers=headers, data=payload)
-print(r.cookies)
-
 
 soup = BeautifulSoup(r.text, "html.parser")
 
 try:
     print(soup.find("a", attrs={"class": "hd-download"}).get("href"))
-    print(soup.find("a", attrs={"class": "sd-download"}).get("href"))
+    # print(soup.find("a", attrs={"class": "sd-download"}).get("href"))
 except AttributeError:
     print("Wrong password/username")
 
