@@ -30,15 +30,32 @@ if args.user:
     url += "video_login?embed=true"
 
     r = requests.post(url, headers=headers, data=payload)
+
+    soup = BeautifulSoup(r.text, "html.parser")
+
+    path = soup.find("link", attrs={"rel": "prefetch"}).get("href")
+    path = path[30:-29]
+
+    video_url = "https://hls2.videos.sproutvideo.com" + path + "/video/index.m3u8"
+
+    command = "streamlink "
+    command += " --http-query-param Policy=" + r.cookies.get("CloudFront-Policy", path=path)
+    command += " --http-query-param Key-Pair-Id=" + r.cookies.get("CloudFront-Key-Pair-Id", path=path)
+    command += " --http-query-param Signature=" + r.cookies.get("CloudFront-Signature", path=path)
+    command += " \"" + video_url + "\""
+    command += " best -o test.mp4"
+
+    print(command)
+
 else:
 
     payload = {"password": args.password, "host": "unknown", "url": "unknown", "queryParams": ""}
     r = requests.post(args.url.replace("embed", "video_password"), headers=headers, data=payload)
+    soup = BeautifulSoup(r.text, "html.parser")
 
-soup = BeautifulSoup(r.text, "html.parser")
-try:
-    print(soup.find("a", attrs={"class": "hd-download"}).get("href"))
-    # print(soup.find("a", attrs={"class": "sd-download"}).get("href"))
-except AttributeError:
-    print("Wrong password/username")
+    try:
+        print(soup.find("a", attrs={"class": "hd-download"}).get("href"))
+        # print(soup.find("a", attrs={"class": "sd-download"}).get("href"))
+    except AttributeError:
+        print("Wrong password/username")
 
