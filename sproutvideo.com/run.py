@@ -24,12 +24,12 @@ if args.user:
     payload = {"email": args.user, "password": args.password, "host": "unknown", "url": "unknown",
                "params": "host=unknown&url=unknown"}
 
-    url = args.url.replace("embed", "videos")
+    url = args.url.replace("videos.", "")
+    url = url.replace("embed", "videos")
     url = url[:url.rfind("/")+1]
     url += "video_login?embed=true"
 
     r = requests.post(url, headers=headers, data=payload)
-
 else:
 
     payload = {"password": args.password, "host": "unknown", "url": "unknown", "queryParams": ""}
