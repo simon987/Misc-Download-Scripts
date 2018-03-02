@@ -19,13 +19,23 @@ headers = {
     "Referer": args.url
 }
 
+if args.user:
 
-payload = {"email": args.user if args.user is not None else "", "password": args.password,
-           "host": "unknown", "url": "unknown", "queryParams": ""}
-r = requests.post(args.url.replace("embed", "video_password"), headers=headers, data=payload)
+    payload = {"email": args.user, "password": args.password, "host": "unknown", "url": "unknown",
+               "params": "host=unknown&url=unknown"}
+
+    url = args.url.replace("embed", "videos")
+    url = url[:url.rfind("/")+1]
+    url += "video_login?embed=true"
+
+    r = requests.post(url, headers=headers, data=payload)
+
+else:
+
+    payload = {"password": args.password, "host": "unknown", "url": "unknown", "queryParams": ""}
+    r = requests.post(args.url.replace("embed", "video_password"), headers=headers, data=payload)
 
 soup = BeautifulSoup(r.text, "html.parser")
-
 try:
     print(soup.find("a", attrs={"class": "hd-download"}).get("href"))
     # print(soup.find("a", attrs={"class": "sd-download"}).get("href"))
