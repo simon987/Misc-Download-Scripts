@@ -2,7 +2,7 @@
 
 ### Setup:
 
-```sudo pip3 install python-guerrillamail bs4 pdfkit youtube-dl```
+```sudo pip3 install python-guerrillamail bs4 pdfkit youtube-dl html2text```
 
 ### About
 
